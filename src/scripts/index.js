@@ -10,6 +10,7 @@ const config = {
   parent: "game-container", // ID of the DOM element to add the canvas to
   scene: [Play],
   physics: {
+    debug: true,
     default: "arcade",
     arcade: {
       gravity: { y: 0 }

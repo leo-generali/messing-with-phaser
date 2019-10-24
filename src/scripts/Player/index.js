@@ -5,9 +5,9 @@ const VELOCITY = 32;
 export default class {
   constructor(scene, x = 20, y = 20) {
     this.scene = scene;
-    this.x = x;
-    this.y = y;
+    this.sprite = scene.physics.add.sprite(x, y, "player", 0);
 
+    // Idle animations
     scene.anims.create({
       key: IDLE_ANIM,
       frames: scene.anims.generateFrameNames("player", {
@@ -17,6 +17,7 @@ export default class {
       repeat: -1
     });
 
+    // Walking aniumations
     scene.anims.create({
       key: WALKING_ANIM,
       frames: scene.anims.generateFrameNames("player", {
@@ -26,8 +27,6 @@ export default class {
       repeat: -1
     });
 
-    this.sprite = scene.physics.add.sprite(x, y, "player", 0);
-
     const { LEFT, RIGHT, UP, DOWN, SHIFT } = Phaser.Input.Keyboard.KeyCodes;
     this.keys = scene.input.keyboard.addKeys({
       left: LEFT,
@@ -36,6 +35,13 @@ export default class {
       down: DOWN,
       shift: SHIFT
     });
+
+    // Handle collisions with NPCs
+    this.scene.physics.add.collider(
+      this.sprite,
+      this.scene.npc.sprite,
+      this.scene.npc.talk
+    );
   }
 
   update() {
