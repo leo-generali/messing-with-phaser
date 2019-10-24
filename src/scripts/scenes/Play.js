@@ -1,6 +1,6 @@
 import { Scene } from "phaser";
 import Player from "../Player";
-import playerIdle from "../../assets/sprites/player/idle.png";
+import playerSpritesheet from "../../assets/sprites/player.png";
 
 export default class extends Scene {
   constructor() {
@@ -8,7 +8,7 @@ export default class extends Scene {
   }
 
   preload() {
-    this.load.spritesheet("player", playerIdle, {
+    this.load.spritesheet("player", playerSpritesheet, {
       frameHeight: 8,
       frameWidth: 8
     });
