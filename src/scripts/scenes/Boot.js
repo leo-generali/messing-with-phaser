@@ -6,6 +6,7 @@ export default class extends Scene {
   }
 
   create() {
-    this.add.text(20, 20, "Loading game...");
+    this.add.text(20, 20, "Hello World!");
+    this.scene.start("play_scene");
   }
 }

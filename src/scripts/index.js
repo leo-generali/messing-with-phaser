@@ -1,12 +1,14 @@
 import Phaser from "phaser";
-import Boot from "./scenes/Boot";
+import { Boot, Play } from "./scenes";
 
 const config = {
   type: Phaser.AUTO, // Which renderer to use
-  width: 800, // Canvas width in pixels
-  height: 600, // Canvas height in pixels
+  width: 171, // Canvas width in pixels
+  height: 160, // Canvas height in pixels
+  zoom: 3,
+  pixelArt: true,
   parent: "game-container", // ID of the DOM element to add the canvas to
-  scene: [Boot]
+  scene: [Boot, Play]
 };
 
 const game = new Phaser.Game(config);
