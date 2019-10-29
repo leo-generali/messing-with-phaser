@@ -1,78 +1,65 @@
-const IDLE_ANIM = "player-anim/idle";
-const WALKING_ANIM = "player-anim/side-walking";
+import { GameObjects } from "phaser";
+import {
+  setAnimations,
+  IDLE_ANIM,
+  WALKING_ANIM_DOWN,
+  WALKING_ANIM_UP,
+  WALKING_ANIM_SIDE
+} from "./animations";
+
 const VELOCITY = 32;
+const ACCELERATION = 600;
 
-export default class {
-  constructor(scene, x = 20, y = 20) {
-    this.scene = scene;
-    this.sprite = scene.physics.add.sprite(x, y, "player", 0);
+export default class extends GameObjects.Sprite {
+  constructor(config) {
+    super(config.scene, config.x, config.y);
+    this.scene = config.scene;
+    this.scene.add.existing(this);
+    this.scene.physics.world.enable(this);
 
-    // Idle animations
-    scene.anims.create({
-      key: IDLE_ANIM,
-      frames: scene.anims.generateFrameNames("player", {
-        frames: [0, 4, 8, 12]
-      }),
-      frameRate: "8",
-      repeat: -1
-    });
+    this.body.maxVelocity.x = 200;
+    this.body.maxVelocity.y = 500;
 
-    // Walking aniumations
-    scene.anims.create({
-      key: WALKING_ANIM,
-      frames: scene.anims.generateFrameNames("player", {
-        frames: [0, 4, 8, 12]
-      }),
-      frameRate: "16",
-      repeat: -1
-    });
+    this.body.setSize(16, 16);
+
+    // Set all the animations for Mario
+    setAnimations(this.scene);
 
     const { LEFT, RIGHT, UP, DOWN, SHIFT } = Phaser.Input.Keyboard.KeyCodes;
-    this.keys = scene.input.keyboard.addKeys({
+    this.keys = this.scene.input.keyboard.addKeys({
       left: LEFT,
       right: RIGHT,
       up: UP,
       down: DOWN,
       shift: SHIFT
     });
-
-    // Handle collisions with NPCs
-    this.scene.physics.add.collider(
-      this.sprite,
-      this.scene.npc.sprite,
-      this.scene.npc.talk
-    );
   }
 
   update() {
     // Stop player movement if no key is being pressed
-    this.sprite.body.setVelocity(0);
-    this.sprite.body.setCollideWorldBounds(true);
-    const velocity = this.keys.shift.isDown ? VELOCITY + 16 : VELOCITY;
+    this.body.setVelocity(0);
+    this.body.setCollideWorldBounds(true);
+    this._handleMovement();
+  }
 
-    // Handle
+  _handleMovement() {
     if (this.keys.left.isDown) {
-      this.sprite.setVelocityX(-velocity);
-      this.sprite.anims.play(WALKING_ANIM, true);
+      this.flipX = true;
+      this._run(-ACCELERATION);
+      this.anims.play(WALKING_ANIM_SIDE, true);
     }
     if (this.keys.right.isDown) {
-      this.sprite.setVelocityX(+velocity);
-      this.sprite.anims.play(WALKING_ANIM, true);
-    }
-    if (this.keys.up.isDown) {
-      this.sprite.setVelocityY(-velocity);
-      this.sprite.anims.play(WALKING_ANIM, true);
-    }
-    if (this.keys.down.isDown) {
-      this.sprite.setVelocityY(+velocity);
-      this.sprite.anims.play(WALKING_ANIM, true);
+      this.flipX = false;
+      this._run(+ACCELERATION);
+      this.anims.play(WALKING_ANIM_SIDE, true);
     }
 
-    if (
-      this.sprite.body.velocity.x === 0 &&
-      this.sprite.body.velocity.y === 0
-    ) {
-      this.sprite.anims.play(IDLE_ANIM, true);
+    if (this.keys.right.isUp) {
+      this.anims.play(IDLE_ANIM, true);
     }
+  }
+
+  _run(velocity) {
+    this.body.setAccelerationX(velocity);
   }
 }

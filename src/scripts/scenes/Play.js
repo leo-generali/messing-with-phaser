@@ -1,8 +1,11 @@
 import { Scene } from "phaser";
 import Player from "../Player";
-import NPC from "../NPC";
-import playerSpritesheet from "../../assets/sprites/player.png";
-import npcSpritesheet from "../../assets/sprites/npc.png";
+import sprites from "../../assets/sprites/sprites.png";
+
+const SPRITE_CONFIG = {
+  frameHeight: 16,
+  frameWidth: 16
+};
 
 export default class extends Scene {
   constructor() {
@@ -10,23 +13,14 @@ export default class extends Scene {
   }
 
   preload() {
-    this.load.spritesheet("player", playerSpritesheet, {
-      frameHeight: 8,
-      frameWidth: 8
-    });
-    this.load.spritesheet("npc", npcSpritesheet, {
-      frameHeight: 8,
-      frameWidth: 8
-    });
+    this.load.spritesheet("player", sprites, SPRITE_CONFIG);
   }
 
   create() {
-    this.npc = new NPC(this);
-    this.player = new Player(this);
+    this.player = new Player({ scene: this, x: 20, y: 20 });
   }
 
   update(time, delta) {
     this.player.update();
-    this.npc.update();
   }
 }
