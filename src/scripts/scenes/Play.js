@@ -21,6 +21,6 @@ export default class extends Scene {
   }
 
   update(time, delta) {
-    this.player.update();
+    this.player.update({ delta });
   }
 }

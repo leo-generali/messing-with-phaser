@@ -7,8 +7,8 @@ import {
   WALKING_ANIM_SIDE
 } from "./animations";
 
-const VELOCITY = 32;
-const ACCELERATION = 600;
+const ACCELERATION = 120;
+const JUMP_TIME = 300;
 
 export default class extends GameObjects.Sprite {
   constructor(config) {
@@ -17,8 +17,15 @@ export default class extends GameObjects.Sprite {
     this.scene.add.existing(this);
     this.scene.physics.world.enable(this);
 
-    this.body.maxVelocity.x = 200;
-    this.body.maxVelocity.y = 500;
+    this.body.setCollideWorldBounds(true);
+    this.body.setDragX(800);
+
+    // Max Speed of Player Character
+    this.body.maxVelocity.x = 100;
+
+    // Add jump mechanic variables
+    this.isJumping = false;
+    this.jumpTimer = JUMP_TIME;
 
     this.body.setSize(16, 16);
 
@@ -35,31 +42,42 @@ export default class extends GameObjects.Sprite {
     });
   }
 
-  update() {
-    // Stop player movement if no key is being pressed
-    this.body.setVelocity(0);
-    this.body.setCollideWorldBounds(true);
+  update({ delta }) {
     this._handleMovement();
+
+    this.jumpTimer -= delta;
+    if (this.jumpTimer < 0) {
+      this.isJumping = false;
+    }
   }
 
   _handleMovement() {
     if (this.keys.left.isDown) {
       this.flipX = true;
+      this.anims.play(WALKING_ANIM_SIDE, true);
       this._run(-ACCELERATION);
-      this.anims.play(WALKING_ANIM_SIDE, true);
-    }
-    if (this.keys.right.isDown) {
+    } else if (this.keys.right.isDown) {
       this.flipX = false;
-      this._run(+ACCELERATION);
       this.anims.play(WALKING_ANIM_SIDE, true);
+      this._run(+ACCELERATION);
+    } else {
+      this.anims.play(IDLE_ANIM, true);
+      this._run(0);
     }
 
-    if (this.keys.right.isUp) {
-      this.anims.play(IDLE_ANIM, true);
+    if (this.keys.up.isDown && this.isJumping === false) {
+      this._jump();
     }
   }
 
   _run(velocity) {
-    this.body.setAccelerationX(velocity);
+    this.body.velocity.x = velocity;
+  }
+
+  _jump() {
+    this.jumpTimer = JUMP_TIME;
+    this.body.setVelocityY(-150);
+    this.anims.play(IDLE_ANIM, true);
+    this.isJumping = true;
   }
 }
