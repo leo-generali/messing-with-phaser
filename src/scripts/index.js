@@ -3,7 +3,7 @@ import { Play } from "./scenes";
 
 const config = {
   type: Phaser.AUTO, // Which renderer to use
-  width: 192, // Canvas width in pixels
+  width: 160, // Canvas width in pixels
   height: 160, // Canvas height in pixels
   pixelArt: true,
   zoom: 3,

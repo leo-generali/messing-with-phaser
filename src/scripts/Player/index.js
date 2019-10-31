@@ -49,7 +49,7 @@ export default class extends GameObjects.Sprite {
 
     // If the player is touching the floor, they cannot be
     // jumping. Thus we set isJumping to false.
-    if (this.body.touching.down === true) {
+    if (this._isTouchingFloor() === true && !this.jumping) {
       this.isJumping = false;
     }
   }
@@ -80,5 +80,9 @@ export default class extends GameObjects.Sprite {
   _jump() {
     this.body.setVelocityY(-170);
     this.isJumping = true;
+  }
+
+  _isTouchingFloor() {
+    return this.body.blocked.down;
   }
 }
