@@ -25,9 +25,11 @@ export default class extends GameObjects.Sprite {
 
     // Add jump mechanic variables
     this.isJumping = false;
-    this.jumpTimer = JUMP_TIME;
 
+    // Set the size of the player as the size of the character
+    // Move offset to top left
     this.body.setSize(16, 16);
+    this.body.offset.set(0, 0);
 
     // Set all the animations for Mario
     setAnimations(this.scene);
@@ -42,11 +44,12 @@ export default class extends GameObjects.Sprite {
     });
   }
 
-  update({ delta }) {
+  update() {
     this._handleMovement();
 
-    this.jumpTimer -= delta;
-    if (this.jumpTimer < 0) {
+    // If the player is touching the floor, they cannot be
+    // jumping. Thus we set isJumping to false.
+    if (this.body.touching.down === true) {
       this.isJumping = false;
     }
   }
@@ -75,9 +78,7 @@ export default class extends GameObjects.Sprite {
   }
 
   _jump() {
-    this.jumpTimer = JUMP_TIME;
-    this.body.setVelocityY(-150);
-    this.anims.play(IDLE_ANIM, true);
+    this.body.setVelocityY(-170);
     this.isJumping = true;
   }
 }

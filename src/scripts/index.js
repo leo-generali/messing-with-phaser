@@ -3,8 +3,8 @@ import { Play } from "./scenes";
 
 const config = {
   type: Phaser.AUTO, // Which renderer to use
-  width: 400, // Canvas width in pixels
-  height: 80, // Canvas height in pixels
+  width: 192, // Canvas width in pixels
+  height: 160, // Canvas height in pixels
   pixelArt: true,
   zoom: 3,
   parent: "game-container", // ID of the DOM element to add the canvas to
@@ -12,7 +12,7 @@ const config = {
   physics: {
     arcade: {
       gravity: { y: 500 },
-      debug: false
+      debug: true
     },
     default: "arcade"
   }
