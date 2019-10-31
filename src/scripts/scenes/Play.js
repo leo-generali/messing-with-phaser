@@ -2,6 +2,7 @@ import { Scene } from "phaser";
 import Player from "../Player";
 import sprites from "../../assets/sprites.png";
 import tileset from "../../assets/tileset.png";
+import { levelOne } from "../../assets/levels";
 
 const SPRITE_CONFIG = {
   frameHeight: 16,
@@ -21,27 +22,15 @@ export default class extends Scene {
   create() {
     this.cameras.main.setBackgroundColor("#ade6ff");
     this.player = new Player({ scene: this, x: 20, y: 20 });
-    const level = [[6, 6, 6, 6, 6, 6, 6, 6, 6, 6]];
 
     const map = this.make.tilemap({
-      data: level,
+      data: Map.graphicMapToTilemap(levelOne),
       tileWidth: 16,
       tileHeight: 16
     });
 
     const tiles = map.addTilesetImage("tiles");
-    const groundLayer = map.createStaticLayer(0, tiles, 0, 144);
-
-    map.forEachTile(
-      tile => {
-        console.log(tile);
-      },
-      this,
-      0,
-      0,
-      map.width,
-      map.height
-    );
+    const groundLayer = map.createStaticLayer(0, tiles, 0, 0);
 
     groundLayer.setCollisionByExclusion([-1]);
 
@@ -54,7 +43,20 @@ export default class extends Scene {
     // this.physics.add.staticGroup(groundLayer);
   }
 
-  update() {
-    this.player.update();
+  update(time, delta) {
+    this.player.update(delta);
+  }
+}
+
+const MAP_CONFIG = {
+  "[": 0,
+  "/": 1,
+  "]": 2,
+  " ": null
+};
+
+class Map {
+  static graphicMapToTilemap(map) {
+    return map.map(layer => layer.split("").map(tile => MAP_CONFIG[tile]));
   }
 }

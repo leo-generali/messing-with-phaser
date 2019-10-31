@@ -1,14 +1,7 @@
 import { GameObjects } from "phaser";
-import {
-  setAnimations,
-  IDLE_ANIM,
-  WALKING_ANIM_DOWN,
-  WALKING_ANIM_UP,
-  WALKING_ANIM_SIDE
-} from "./animations";
+import { setAnimations, IDLE_ANIM, WALKING_ANIM_SIDE } from "./animations";
 
 const ACCELERATION = 120;
-const JUMP_TIME = 300;
 
 export default class extends GameObjects.Sprite {
   constructor(config) {
@@ -30,6 +23,8 @@ export default class extends GameObjects.Sprite {
     // Move offset to top left
     this.body.setSize(16, 16);
     this.body.offset.set(0, 0);
+
+    this.jumpPress = 0;
 
     // Set all the animations for Mario
     setAnimations(this.scene);
@@ -78,7 +73,7 @@ export default class extends GameObjects.Sprite {
   }
 
   _jump() {
-    this.body.setVelocityY(-170);
+    this.body.setVelocityY(-190);
     this.isJumping = true;
   }
 
