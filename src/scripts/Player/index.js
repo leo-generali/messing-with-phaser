@@ -17,7 +17,8 @@ export default class extends GameObjects.Sprite {
     this.body.maxVelocity.x = 100;
 
     // Add jump mechanic variables
-    this.isJumping = false;
+    // Keep track of how long player has been holding jump button (for variable jump height)
+    this.jumpTimer = 0;
 
     // Set the size of the player as the size of the character
     // Move offset to top left
@@ -41,12 +42,6 @@ export default class extends GameObjects.Sprite {
 
   update() {
     this._handleMovement();
-
-    // If the player is touching the floor, they cannot be
-    // jumping. Thus we set isJumping to false.
-    if (this._isTouchingFloor() === true && !this.jumping) {
-      this.isJumping = false;
-    }
   }
 
   _handleMovement() {
@@ -63,8 +58,16 @@ export default class extends GameObjects.Sprite {
       this._run(0);
     }
 
-    if (this.keys.up.isDown && this.isJumping === false) {
-      this._jump();
+    if (this.keys.up.isDown) {
+      if (this._isTouchingFloor() && this.jumpTimer === 0) {
+        this.jumpTimer = 1;
+        this._jump(-150);
+      } else if (this.jumpTimer > 0 && this.jumpTimer < 30) {
+        this.jumpTimer++;
+        this._jump(-150 + this.jumpTimer * 3.5);
+      }
+    } else {
+      if (this.jumpTimer != 0) this.jumpTimer = 0;
     }
   }
 
@@ -72,9 +75,8 @@ export default class extends GameObjects.Sprite {
     this.body.velocity.x = velocity;
   }
 
-  _jump() {
-    this.body.setVelocityY(-190);
-    this.isJumping = true;
+  _jump(height) {
+    this.body.setVelocityY(height);
   }
 
   _isTouchingFloor() {

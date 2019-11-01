@@ -25,9 +25,6 @@ export default class extends Scene {
     this.player = new Player({ scene: this, x: 20, y: 20 });
     this.enemy = new Enemy({ scene: this, x: 50, y: 20 });
 
-    console.log(this.player);
-    console.log(this.enemy);
-
     const map = this.make.tilemap({
       data: Map.graphicMapToTilemap(levelOne),
       tileWidth: 16,
