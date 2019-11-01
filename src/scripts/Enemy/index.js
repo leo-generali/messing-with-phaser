@@ -27,15 +27,23 @@ export default class extends GameObjects.Sprite {
 
   update() {
     this.scene.physics.world.overlap(this, this.player, () => {
-      this._verticalHit();
+      this._checkIfVerticalHit();
     });
   }
 
-  _verticalHit() {
+  _checkIfVerticalHit() {
     if (this.player.body.velocity.y > 0) {
+      // Bounce the player back up
       this.player.enemyHit();
+      // Kill this enemy
+      this._kill();
     } else {
       this.player.takeDamage();
     }
+  }
+
+  _kill() {
+    // this.body.destroy();
+    // this.destroy();
   }
 }

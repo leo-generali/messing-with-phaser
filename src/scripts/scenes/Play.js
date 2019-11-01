@@ -1,4 +1,4 @@
-import { Scene } from "phaser";
+import { Scene, Physics } from "phaser";
 import Player from "../Player";
 import Enemy from "../Enemy";
 import sprites from "../../assets/sprites.png";
@@ -12,7 +12,7 @@ const SPRITE_CONFIG = {
 
 export default class extends Scene {
   constructor() {
-    super("play_scene");
+    super({ key: "play_scene" });
   }
 
   preload() {

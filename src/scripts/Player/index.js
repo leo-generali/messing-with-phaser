@@ -70,7 +70,6 @@ export default class extends GameObjects.Sprite {
 
   _checkLives() {
     if (this.lives < 1) {
-      console.log("youre dead!");
     }
   }
 
