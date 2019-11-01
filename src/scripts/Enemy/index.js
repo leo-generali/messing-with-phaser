@@ -34,9 +34,8 @@ export default class extends GameObjects.Sprite {
   _verticalHit() {
     if (this.player.body.velocity.y > 0) {
       this.player.enemyHit();
-      console.log("You hit it from the top!");
     } else {
-      console.log("You ran into this enemy!");
+      this.player.takeDamage();
     }
   }
 }

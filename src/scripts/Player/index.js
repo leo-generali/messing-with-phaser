@@ -2,7 +2,8 @@ import { GameObjects } from "phaser";
 import { setAnimations, IDLE_ANIM, WALKING_ANIM_SIDE } from "./animations";
 
 const VELOCITY = 120;
-const JUMP_VELOCITY = -140;
+const JUMP_VELOCITY = -145;
+const DAMAGE_INVINCIBILITY_TIME = 60;
 
 export default class extends GameObjects.Sprite {
   constructor(config) {
@@ -12,7 +13,6 @@ export default class extends GameObjects.Sprite {
     this.scene.physics.world.enable(this);
 
     this.body.setCollideWorldBounds(true);
-    // this.body.setDragX(800);
 
     // Add jump mechanic variables
     // Keep track of how long player has been holding jump button (for variable jump height)
@@ -26,6 +26,10 @@ export default class extends GameObjects.Sprite {
     // Set all the animations for Mario
     setAnimations(this.scene);
 
+    // Variables related to player health
+    this.lives = 3;
+    this.timeSinceLastHit = DAMAGE_INVINCIBILITY_TIME;
+
     const { LEFT, RIGHT, UP, DOWN, SHIFT } = Phaser.Input.Keyboard.KeyCodes;
     this.keys = this.scene.input.keyboard.addKeys({
       left: LEFT,
@@ -36,8 +40,38 @@ export default class extends GameObjects.Sprite {
     });
   }
 
+  // Public Methods
+
   update() {
     this._handleMovement();
+    this._checkLives();
+
+    this.timeSinceLastHit++;
+  }
+
+  enemyHit() {
+    if (this.keys.up.isDown) {
+      this._jump(-220);
+    } else {
+      this._jump(JUMP_VELOCITY);
+    }
+  }
+
+  // Take one point of damage away if no damage is added
+  takeDamage(damage = 1) {
+    if (this.timeSinceLastHit > DAMAGE_INVINCIBILITY_TIME) {
+      this.lives = this.lives - damage;
+      this.scene.cameras.main.shake();
+      this.timeSinceLastHit = 0;
+    }
+  }
+
+  // Private Methods
+
+  _checkLives() {
+    if (this.lives < 1) {
+      console.log("youre dead!");
+    }
   }
 
   _handleMovement() {
@@ -58,26 +92,14 @@ export default class extends GameObjects.Sprite {
       if (this._isTouchingFloor() && this.jumpTimer === 0) {
         this.jumpTimer = 1;
         this._jump(JUMP_VELOCITY);
-      } else if (this.jumpTimer > 0 && this.jumpTimer < 30) {
+      } else if (this.jumpTimer > 0 && this.jumpTimer < 10) {
         this.jumpTimer++;
-        this._jump(JUMP_VELOCITY + this.jumpTimer * 3.5);
+        this._jump(JUMP_VELOCITY + this.jumpTimer * 1.5);
       }
     } else {
       if (this.jumpTimer != 0) this.jumpTimer = 0;
     }
   }
-
-  // Public Method
-
-  enemyHit() {
-    if (this.keys.up.isDown) {
-      this._jump(-220);
-    } else {
-      this._jump(JUMP_VELOCITY);
-    }
-  }
-
-  // Private Methods
 
   _run(velocity) {
     this.body.velocity.x = velocity;
