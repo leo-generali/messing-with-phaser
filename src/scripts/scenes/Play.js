@@ -1,5 +1,6 @@
 import { Scene } from "phaser";
 import Player from "../Player";
+import Enemy from "../Enemy";
 import sprites from "../../assets/sprites.png";
 import tileset from "../../assets/tileset.png";
 import { levelOne } from "../../assets/levels";
@@ -15,13 +16,17 @@ export default class extends Scene {
   }
 
   preload() {
-    this.load.spritesheet("player", sprites, SPRITE_CONFIG);
+    this.load.spritesheet("characters", sprites, SPRITE_CONFIG);
     this.load.image("tiles", tileset);
   }
 
   create() {
     this.cameras.main.setBackgroundColor("#ade6ff");
     this.player = new Player({ scene: this, x: 20, y: 20 });
+    this.enemy = new Enemy({ scene: this, x: 50, y: 20 });
+
+    console.log(this.player);
+    console.log(this.enemy);
 
     const map = this.make.tilemap({
       data: Map.graphicMapToTilemap(levelOne),
@@ -34,17 +39,13 @@ export default class extends Scene {
 
     groundLayer.setCollisionByExclusion([-1]);
 
-    // this.level = this.physics.add.staticGroup();
-    // this.level.create(500 / 2 - 160, 200 / 2, "wall");
-    // this.level.create(0, 160, "wall");
-    // this.level.create(32, 160, "wall");
     this.physics.add.collider(this.player, groundLayer);
-
-    // this.physics.add.staticGroup(groundLayer);
+    this.physics.add.collider(this.enemy, groundLayer);
   }
 
   update(time, delta) {
-    this.player.update(delta);
+    this.player.update();
+    this.enemy.update();
   }
 }
 

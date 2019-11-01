@@ -21,8 +21,8 @@ export default class extends GameObjects.Sprite {
 
     // Set the size of the player as the size of the character
     // Move offset to top left
-    this.body.setSize(16, 16);
-    this.body.offset.set(0, 0);
+    this.body.setSize(12, 13);
+    this.body.offset.set(2, 3);
 
     this.jumpPress = 0;
 
