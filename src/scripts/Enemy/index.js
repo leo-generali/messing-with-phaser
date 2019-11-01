@@ -9,8 +9,8 @@ export default class extends GameObjects.Sprite {
 
     this.body.setCollideWorldBounds(true);
 
-    this.body.setSize(16, 10);
-    this.body.offset.set(0, 6);
+    this.body.setSize(12, 10);
+    this.body.offset.set(2, 6);
 
     this.scene.anims.create({
       key: "enemy-anim/idle",
@@ -26,16 +26,17 @@ export default class extends GameObjects.Sprite {
   }
 
   update() {
-    this.scene.physics.world.overlap(this, this.player, this._verticalHit);
+    this.scene.physics.world.overlap(this, this.player, () => {
+      this._verticalHit();
+    });
   }
 
   _verticalHit() {
-    // console.log("You hit the thing!");
-    // if (
-    //   this.scene.player.body.velocity.y >= 0
-    //   // this.player.body.y + this.player.body.height - enemy.body.y < 10
-    // ) {
-    //   console.log("From the top even!");
-    // }
+    if (this.player.body.velocity.y > 0) {
+      this.player.enemyHit();
+      console.log("You hit it from the top!");
+    } else {
+      console.log("You ran into this enemy!");
+    }
   }
 }
