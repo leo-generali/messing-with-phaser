@@ -6,28 +6,25 @@ const JUMP_VELOCITY = -145;
 const DAMAGE_INVINCIBILITY_TIME = 60;
 
 export default class extends GameObjects.Sprite {
-  constructor(config) {
-    super(config.scene, config.x, config.y);
-    this.scene = config.scene;
+  constructor({ scene, x, y }) {
+    super(scene, x, y);
+    this.scene = scene;
     this.scene.add.existing(this);
     this.scene.physics.world.enable(this);
 
-    this.body.setCollideWorldBounds(true);
+    // Set the size of the player as the size of the character
+    // Move offset to top left
+    this.body.setSize(12, 13).setOffset(2, 3);
 
     // Add jump mechanic variables
     // Keep track of how long player has been holding jump button (for variable jump height)
     this.jumpTimer = 0;
 
-    // Set the size of the player as the size of the character
-    // Move offset to top left
-    this.body.setSize(12, 13);
-    this.body.offset.set(2, 3);
-
     // Set all the animations for Mario
     setAnimations(this.scene);
 
     // Variables related to player health
-    this.lives = 3;
+    this.lives = 1;
     this.timeSinceLastHit = DAMAGE_INVINCIBILITY_TIME;
 
     const { LEFT, RIGHT, UP, DOWN, SHIFT } = Phaser.Input.Keyboard.KeyCodes;
@@ -70,6 +67,8 @@ export default class extends GameObjects.Sprite {
 
   _checkLives() {
     if (this.lives < 1) {
+      this.scene.setPlayerDead();
+      this.destroy(true);
     }
   }
 
@@ -101,7 +100,7 @@ export default class extends GameObjects.Sprite {
   }
 
   _run(velocity) {
-    this.body.velocity.x = velocity;
+    this.body.setVelocityX(velocity);
   }
 
   _jump(height) {

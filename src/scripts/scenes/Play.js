@@ -21,6 +21,7 @@ export default class extends Scene {
   }
 
   create() {
+    this.isPlayerDead = false;
     this.cameras.main.setBackgroundColor("#ade6ff");
     this.player = new Player({ scene: this, x: 20, y: 20 });
     this.enemy = new Enemy({ scene: this, x: 50, y: 20 });
@@ -41,8 +42,14 @@ export default class extends Scene {
   }
 
   update(time, delta) {
+    if (this.isPlayerDead) return;
+
     this.player.update();
     this.enemy.update();
+  }
+
+  setPlayerDead() {
+    this.isPlayerDead = true;
   }
 }
 
