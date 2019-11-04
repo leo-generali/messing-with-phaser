@@ -1,6 +1,12 @@
 import { GameObjects } from "phaser";
 import Projectile from "../Projectile";
-import { setAnimations, IDLE_ANIM, WALKING_ANIM_SIDE } from "./animations";
+import {
+  setAnimations,
+  IDLE_ANIM,
+  WALKING_ANIM_SIDE,
+  JUMP_ANIM,
+  FALL_ANIM
+} from "./animations";
 import { useContext } from "preact/hooks";
 import { Store } from "../../ui/store";
 
@@ -21,14 +27,15 @@ export default class extends GameObjects.Sprite {
 
     // Set the size of the player as the size of the character
     // Move offset to top left
-    this.body.setSize(12, 13).setOffset(2, 3);
+    this.body.setSize(16, 21).setOffset(8, 9);
 
     // Add jump mechanic variables
     // Keep track of how long player has been holding jump button (for variable jump height)
     this.jumpTimer = 0;
 
-    //
+    // Variables related to teleportation mechanic
     this.projectileTimer = 0;
+    this.projectileTimerText = "";
 
     // Set all the animations for Mario
     setAnimations(this.scene);
@@ -85,6 +92,15 @@ export default class extends GameObjects.Sprite {
     this.y = y;
   }
 
+  teleporting(isTeleporting) {
+    this.setActive(!isTeleporting).setVisible(!isTeleporting);
+    if (isTeleporting) {
+      this.scene.physics.world.disable(this);
+    } else {
+      this.scene.physics.world.enable(this);
+    }
+  }
+
   // Private Methods
 
   _checkLives() {
@@ -119,6 +135,12 @@ export default class extends GameObjects.Sprite {
     } else {
       if (this.jumpTimer != 0) this.jumpTimer = 0;
     }
+
+    // If the player is jumping or falling, set the animation
+    // to the jump one.
+    if (this.body.velocity.y !== 0) {
+      this.anims.play(JUMP_ANIM, true);
+    }
   }
 
   _handleProjectile() {
@@ -131,20 +153,25 @@ export default class extends GameObjects.Sprite {
       this.projectileTimer > 0 &&
       this.scene.projectileGroup.children.entries.length < 1
     ) {
-      this.scene.projectileGroup.add(
-        new Projectile({
-          scene: this.scene,
-          x: this.x,
-          y: this.y,
-          direction: this.flipX ? "left" : "right",
-          projectileTimer:
-            this.projectileTimer > 20
-              ? MAX_PROJECTILE_TIMER
-              : this.projectileTimer
-        })
-      );
-      this.projectileTimer = 0;
+      this._shootProjectile();
     }
+  }
+
+  _shootProjectile() {
+    this.teleporting(true);
+    this.scene.projectileGroup.add(
+      new Projectile({
+        scene: this.scene,
+        x: this.x,
+        y: this.y,
+        direction: this.flipX ? "left" : "right",
+        projectileTimer:
+          this.projectileTimer > 20
+            ? MAX_PROJECTILE_TIMER
+            : this.projectileTimer
+      })
+    );
+    this.projectileTimer = 0;
   }
 
   _run(velocity) {

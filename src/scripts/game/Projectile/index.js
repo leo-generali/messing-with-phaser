@@ -18,7 +18,7 @@ export default class Projectile extends GameObjects.Sprite {
     this.scene.physics.world.enable(this);
 
     // Remove the projectile if it hits the ground
-    this.scene.physics.add.collider(this, this.scene.groundLayer, () => {
+    this.scene.physics.add.collider(this, this.scene.foregroundLayer, () => {
       this._kill();
     });
 
@@ -66,6 +66,7 @@ export default class Projectile extends GameObjects.Sprite {
 
   _kill() {
     this.player.teleport(this.x, this.y);
+    this.player.teleporting(false);
     this.destroy();
   }
 }
