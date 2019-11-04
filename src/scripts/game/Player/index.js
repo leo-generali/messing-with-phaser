@@ -49,6 +49,10 @@ export default class extends GameObjects.Sprite {
     this._checkLives();
 
     this.timeSinceLastHit++;
+
+    if (this.timeSinceLastHit > DAMAGE_INVINCIBILITY_TIME && this.alpha !== 1) {
+      this.setAlpha(1);
+    }
   }
 
   enemyHit() {
@@ -62,6 +66,7 @@ export default class extends GameObjects.Sprite {
   // Take one point of damage away if no damage is added
   takeDamage(damage = 1) {
     if (this.timeSinceLastHit > DAMAGE_INVINCIBILITY_TIME) {
+      this.setAlpha(0.5);
       this.lives = this.lives - damage;
       this.scene.cameras.main.shake();
       this.timeSinceLastHit = 0;
