@@ -80,6 +80,11 @@ export default class extends GameObjects.Sprite {
     }
   }
 
+  teleport(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
   // Private Methods
 
   _checkLives() {

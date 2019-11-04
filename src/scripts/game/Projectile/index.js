@@ -11,6 +11,7 @@ export default class Projectile extends GameObjects.Sprite {
     this.scene = config.scene;
     this.direction = config.direction;
     this.projectileTimer = config.projectileTimer;
+    this.player = config.scene.player;
 
     // Let the projectible interact with the game world
     this.scene.add.existing(this);
@@ -64,6 +65,7 @@ export default class Projectile extends GameObjects.Sprite {
   }
 
   _kill() {
+    this.player.teleport(this.x, this.y);
     this.destroy();
   }
 }
