@@ -3,6 +3,7 @@ import Player from "../Player";
 import Enemy from "../Enemy";
 import sprites from "../../../assets/sprites.png";
 import tileset from "../../../assets/tileset.png";
+import tilemap from "../../../assets/tilemaps/level_one.json";
 import { levelOne } from "../../../assets/levels";
 
 const SPRITE_CONFIG = {
@@ -18,6 +19,7 @@ export default class extends Scene {
   preload() {
     this.load.spritesheet("characters", sprites, SPRITE_CONFIG);
     this.load.image("tiles", tileset);
+    this.load.tilemapTiledJSON("map", tilemap);
   }
 
   create() {
@@ -28,14 +30,11 @@ export default class extends Scene {
     this.enemyGroup = this.add.group();
     this.enemyGroup.add(this.enemy);
 
-    const map = this.make.tilemap({
-      data: Map.graphicMapToTilemap(levelOne),
-      tileWidth: 16,
-      tileHeight: 16
-    });
+    const map = this.make.tilemap({ key: "map" });
+    const tileset = map.addTilesetImage("platformer", "tiles");
 
-    const tiles = map.addTilesetImage("tiles");
-    const groundLayer = map.createStaticLayer(0, tiles, 0, 0);
+    // const tiles = map.addTilesetImage("tiles");
+    const groundLayer = map.createStaticLayer("Platforms", tileset, 0, 0);
 
     groundLayer.setCollisionByExclusion([-1]);
 

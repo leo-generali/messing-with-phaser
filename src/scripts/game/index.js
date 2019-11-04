@@ -6,8 +6,8 @@ import { Play } from "./scenes";
 
 const config = {
   type: Phaser.AUTO, // Which renderer to use
-  width: 160, // Canvas width in pixels
-  height: 160, // Canvas height in pixels
+  width: 240, // Canvas width in pixels
+  height: 240, // Canvas height in pixels
   pixelArt: true,
   zoom: 3,
   parent: "game", // ID of the DOM element to add the canvas to
@@ -29,5 +29,5 @@ export const Game = memo(
 
     return <div id="game" />;
   },
-  (_, __) => false
+  () => false
 );
