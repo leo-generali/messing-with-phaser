@@ -43,7 +43,6 @@ export default class extends GameObjects.Sprite {
   }
 
   _kill() {
-    // this.body.destroy();
-    // this.destroy();
+    this.destroy();
   }
 }

@@ -1,4 +1,5 @@
 import { h } from "preact";
+import "../../assets/styles/index.scss";
 
 const style = {
   position: "absolute"

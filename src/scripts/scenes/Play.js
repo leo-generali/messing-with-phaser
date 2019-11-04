@@ -25,6 +25,8 @@ export default class extends Scene {
     this.cameras.main.setBackgroundColor("#ade6ff");
     this.player = new Player({ scene: this, x: 20, y: 20 });
     this.enemy = new Enemy({ scene: this, x: 50, y: 20 });
+    this.enemyGroup = this.add.group();
+    this.enemyGroup.add(this.enemy);
 
     const map = this.make.tilemap({
       data: Map.graphicMapToTilemap(levelOne),
@@ -44,8 +46,11 @@ export default class extends Scene {
   update(time, delta) {
     if (this.isPlayerDead) return;
 
+    this.enemyGroup.children.entries.forEach(sprite => {
+      sprite.update(time, delta);
+    });
+
     this.player.update();
-    this.enemy.update();
   }
 
   setPlayerDead() {
