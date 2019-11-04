@@ -1,6 +1,8 @@
 import { h, render, Fragment } from "preact";
 import { useEffect } from "preact/hooks";
 import { memo } from "preact/compat";
+import { StoreProvider } from "./ui/store";
+
 import { UI } from "./ui";
 import { Play } from "./scenes";
 import Phaser from "phaser";
@@ -35,10 +37,10 @@ const Game = memo(
 
 const App = () => {
   return (
-    <Fragment>
+    <StoreProvider>
       <UI />
       <Game />
-    </Fragment>
+    </StoreProvider>
   );
 };
 

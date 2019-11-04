@@ -1,4 +1,6 @@
 import { h } from "preact";
+import { useContext } from "preact/hooks";
+import { Store } from "./store";
 import "../../assets/styles/index.scss";
 
 const style = {
@@ -6,5 +8,6 @@ const style = {
 };
 
 export const UI = () => {
-  return <div style={style}>Lives: 3</div>;
+  const { state, dispatch } = useContext(Store);
+  return <div style={style}>Lives: {state.lives}</div>;
 };

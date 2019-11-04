@@ -1,5 +1,7 @@
 import { GameObjects } from "phaser";
 import { setAnimations, IDLE_ANIM, WALKING_ANIM_SIDE } from "./animations";
+import { useContext } from "preact/hooks";
+import { Store } from "../ui/store";
 
 const VELOCITY = 120;
 const JUMP_VELOCITY = -145;
@@ -11,6 +13,9 @@ export default class extends GameObjects.Sprite {
     this.scene = scene;
     this.scene.add.existing(this);
     this.scene.physics.world.enable(this);
+
+    // Hook into the UI
+    this.dispatch = useContext(Store).dispatch;
 
     // Set the size of the player as the size of the character
     // Move offset to top left
@@ -24,7 +29,7 @@ export default class extends GameObjects.Sprite {
     setAnimations(this.scene);
 
     // Variables related to player health
-    this.lives = 1;
+    this.lives = 3;
     this.timeSinceLastHit = DAMAGE_INVINCIBILITY_TIME;
 
     const { LEFT, RIGHT, UP, DOWN, SHIFT } = Phaser.Input.Keyboard.KeyCodes;
@@ -60,6 +65,7 @@ export default class extends GameObjects.Sprite {
       this.lives = this.lives - damage;
       this.scene.cameras.main.shake();
       this.timeSinceLastHit = 0;
+      this.dispatch({ type: "UPDATE_LIVES", payload: this.lives });
     }
   }
 
