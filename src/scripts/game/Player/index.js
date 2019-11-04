@@ -1,4 +1,5 @@
 import { GameObjects } from "phaser";
+import Projectile from "../Projectile";
 import { setAnimations, IDLE_ANIM, WALKING_ANIM_SIDE } from "./animations";
 import { useContext } from "preact/hooks";
 import { Store } from "../../ui/store";
@@ -47,6 +48,7 @@ export default class extends GameObjects.Sprite {
   update() {
     this._handleMovement();
     this._checkLives();
+    this._handleProjectile();
 
     this.timeSinceLastHit++;
 
@@ -107,6 +109,21 @@ export default class extends GameObjects.Sprite {
       }
     } else {
       if (this.jumpTimer != 0) this.jumpTimer = 0;
+    }
+  }
+
+  _handleProjectile() {
+    if (
+      this.keys.shift.isDown &&
+      this.scene.projectileGroup.children.entries.length < 1
+    ) {
+      const projectile = new Projectile({
+        scene: this.scene,
+        x: this.x,
+        y: this.y,
+        direction: this.flipX ? "left" : "right"
+      });
+      this.scene.projectileGroup.add(projectile);
     }
   }
 
