@@ -1,7 +1,7 @@
 import { GameObjects } from "phaser";
 import { setAnimations, IDLE_ANIM, WALKING_ANIM_SIDE } from "./animations";
 import { useContext } from "preact/hooks";
-import { Store } from "../ui/store";
+import { Store } from "../../ui/store";
 
 const VELOCITY = 120;
 const JUMP_VELOCITY = -145;

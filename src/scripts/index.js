@@ -1,10 +1,10 @@
-import { h, render, Fragment } from "preact";
+import { h, render } from "preact";
 import { useEffect } from "preact/hooks";
 import { memo } from "preact/compat";
 import { StoreProvider } from "./ui/store";
 
 import { UI } from "./ui";
-import { Play } from "./scenes";
+import { Play } from "./game/scenes";
 import Phaser from "phaser";
 
 const config = {

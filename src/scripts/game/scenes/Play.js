@@ -1,9 +1,9 @@
 import { Scene, Physics } from "phaser";
 import Player from "../Player";
 import Enemy from "../Enemy";
-import sprites from "../../assets/sprites.png";
-import tileset from "../../assets/tileset.png";
-import { levelOne } from "../../assets/levels";
+import sprites from "../../../assets/sprites.png";
+import tileset from "../../../assets/tileset.png";
+import { levelOne } from "../../../assets/levels";
 
 const SPRITE_CONFIG = {
   frameHeight: 16,
