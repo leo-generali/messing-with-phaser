@@ -7,6 +7,7 @@ import { Store } from "../../ui/store";
 const VELOCITY = 120;
 const JUMP_VELOCITY = -145;
 const DAMAGE_INVINCIBILITY_TIME = 60;
+const MAX_PROJECTILE_TIMER = 20;
 
 export default class extends GameObjects.Sprite {
   constructor({ scene, x, y }) {
@@ -25,6 +26,9 @@ export default class extends GameObjects.Sprite {
     // Add jump mechanic variables
     // Keep track of how long player has been holding jump button (for variable jump height)
     this.jumpTimer = 0;
+
+    //
+    this.projectileTimer = 0;
 
     // Set all the animations for Mario
     setAnimations(this.scene);
@@ -113,17 +117,28 @@ export default class extends GameObjects.Sprite {
   }
 
   _handleProjectile() {
+    if (this.keys.shift.isDown) {
+      this.projectileTimer++;
+    }
+
     if (
-      this.keys.shift.isDown &&
+      this.keys.shift.isUp &&
+      this.projectileTimer > 0 &&
       this.scene.projectileGroup.children.entries.length < 1
     ) {
-      const projectile = new Projectile({
-        scene: this.scene,
-        x: this.x,
-        y: this.y,
-        direction: this.flipX ? "left" : "right"
-      });
-      this.scene.projectileGroup.add(projectile);
+      this.scene.projectileGroup.add(
+        new Projectile({
+          scene: this.scene,
+          x: this.x,
+          y: this.y,
+          direction: this.flipX ? "left" : "right",
+          projectileTimer:
+            this.projectileTimer > 20
+              ? MAX_PROJECTILE_TIMER
+              : this.projectileTimer
+        })
+      );
+      this.projectileTimer = 0;
     }
   }
 

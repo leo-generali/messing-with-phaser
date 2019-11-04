@@ -1,6 +1,8 @@
 import { GameObjects } from "phaser";
 
-const VELOCITY = 260;
+const VELOCITY = { MIN: 120, MAX: 300 };
+const MAX_PROJECTILE_TIMER = 20;
+const DIFFERENCE = VELOCITY.MAX - VELOCITY.MIN;
 
 export default class Projectile extends GameObjects.Sprite {
   constructor(config) {
@@ -8,6 +10,7 @@ export default class Projectile extends GameObjects.Sprite {
     super(config.scene, config.x, config.y);
     this.scene = config.scene;
     this.direction = config.direction;
+    this.projectileTimer = config.projectileTimer;
 
     // Let the projectible interact with the game world
     this.scene.add.existing(this);
@@ -31,19 +34,22 @@ export default class Projectile extends GameObjects.Sprite {
     });
 
     this.anims.play("projectile-anim/idle", true);
-    this.body.setVelocityY(-100);
+
+    this._setVelocity();
   }
 
   update() {
-    this._handleMovement();
     this._removeIfOutOfBounds();
   }
 
-  // Private Methods
+  _setVelocity() {
+    const velocity =
+      (this.projectileTimer / MAX_PROJECTILE_TIMER) * DIFFERENCE + VELOCITY.MIN;
 
-  _handleMovement() {
-    const velocity = this.direction === "left" ? VELOCITY * -1 : VELOCITY;
-    this.body.setVelocityX(velocity);
+    this.body.setVelocityY(-100);
+    this.body.setVelocityX(
+      this.direction === "left" ? velocity * -1 : velocity
+    );
   }
 
   _removeIfOutOfBounds() {
