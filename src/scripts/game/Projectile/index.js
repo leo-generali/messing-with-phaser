@@ -1,6 +1,6 @@
 import { GameObjects } from "phaser";
 
-const VELOCITY = { MIN: 120, MAX: 300 };
+const VELOCITY = { MIN: 120, MAX: 400 };
 const MAX_PROJECTILE_TIMER = 20;
 const DIFFERENCE = VELOCITY.MAX - VELOCITY.MIN;
 
@@ -47,7 +47,7 @@ export default class Projectile extends GameObjects.Sprite {
     const velocity =
       (this.projectileTimer / MAX_PROJECTILE_TIMER) * DIFFERENCE + VELOCITY.MIN;
 
-    this.body.setVelocityY(-100);
+    this.body.setVelocityY(-175);
     this.body.setVelocityX(
       this.direction === "left" ? velocity * -1 : velocity
     );

@@ -11,7 +11,7 @@ import { useContext } from "preact/hooks";
 import { Store } from "../../ui/store";
 
 const VELOCITY = 120;
-const JUMP_VELOCITY = -145;
+const JUMP_VELOCITY = -250;
 const DAMAGE_INVINCIBILITY_TIME = 60;
 const MAX_PROJECTILE_TIMER = 20;
 
