@@ -1,0 +1,124 @@
+import State from "../../lib/State";
+import { IDLE_ANIM, WALKING_ANIM_SIDE, JUMP_ANIM } from "./animations";
+import Projectile from "../Projectile";
+
+const VELOCITY = 120;
+const JUMP_VELOCITY = -450;
+
+export class IdleState extends State {
+  enter({ sprite }) {
+    sprite.anims.play(IDLE_ANIM, true);
+    sprite.run(0);
+
+    // In case the player is coming from a projectile state
+    // we turn their ability to move back on
+    sprite.body.moves = true;
+  }
+
+  execute({ sprite }) {
+    const { left, right, up, shift } = sprite.keys;
+    if (up.isDown && sprite.isTouchingFloor()) {
+      this.stateMachine.transition("jump");
+      return;
+    }
+
+    if (left.isDown || right.isDown) {
+      this.stateMachine.transition("move");
+      return;
+    }
+
+    if (shift.isDown) {
+      this.stateMachine.transition("aim", { previousState: "idle" });
+      return;
+    }
+  }
+}
+
+export class MoveState extends State {
+  execute({ sprite }) {
+    const { left, right, up, shift } = sprite.keys;
+
+    if (up.isDown) {
+      this.stateMachine.transition("jump");
+      return;
+    }
+
+    // Handle left and right movement
+    if (left.isDown) {
+      sprite.flipX = true;
+      sprite.run(-VELOCITY);
+      sprite.anims.play(WALKING_ANIM_SIDE, true);
+    } else if (right.isDown) {
+      sprite.flipX = false;
+      sprite.run(VELOCITY);
+      sprite.anims.play(WALKING_ANIM_SIDE, true);
+    }
+
+    if (shift.isDown) {
+      this.stateMachine.transition("aim", { previousState: "move" });
+      return;
+    }
+
+    if (!(left.isDown || right.isDown || up.isDown)) {
+      this.stateMachine.transition("idle");
+      return;
+    }
+  }
+}
+
+export class JumpState extends State {
+  enter({ sprite }) {
+    sprite.jump(JUMP_VELOCITY);
+    sprite.anims.play(JUMP_ANIM, true);
+  }
+
+  execute({ sprite }) {
+    const { left, right, shift } = sprite.keys;
+
+    if (left.isDown) {
+      sprite.flipX = true;
+      sprite.run(-VELOCITY);
+    } else if (right.isDown) {
+      sprite.flipX = false;
+      sprite.run(VELOCITY);
+    }
+
+    if (!(left.isDown || right.isDown)) {
+      sprite.run(0);
+    }
+
+    if (sprite.isTouchingFloor()) {
+      this.stateMachine.transition("idle");
+      return;
+    }
+
+    if (shift.isDown) {
+      this.stateMachine.transition("aim", { previousState: "jump" });
+      return;
+    }
+  }
+}
+
+export class AimState extends State {
+  enter({ sprite, previousState }) {
+    sprite.projectileTimer = 0;
+    sprite.previousState = previousState;
+    sprite.run(0);
+
+    // Stop character movement if jumping
+    if (sprite.previousState === "jump") {
+      sprite.body.moves = false;
+    }
+  }
+
+  execute({ sprite }) {
+    const { shift } = sprite.keys;
+    sprite.projectileTimer++;
+
+    if (shift.isUp) {
+      sprite.shootProjectile();
+    }
+  }
+}
+
+export class ShootingState extends State {}

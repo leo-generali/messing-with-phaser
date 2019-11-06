@@ -45,9 +45,12 @@ export default class Projectile extends GameObjects.Sprite {
 
   _setVelocity() {
     const velocity =
-      (this.projectileTimer / MAX_PROJECTILE_TIMER) * DIFFERENCE + VELOCITY.MIN;
+      ((this.projectileTimer > 20 ? 20 : this.projectileTimer) /
+        MAX_PROJECTILE_TIMER) *
+        DIFFERENCE +
+      VELOCITY.MIN;
 
-    this.body.setVelocityY(-175);
+    this.body.setVelocityY(-200);
     this.body.setVelocityX(
       this.direction === "left" ? velocity * -1 : velocity
     );
@@ -66,7 +69,13 @@ export default class Projectile extends GameObjects.Sprite {
 
   _kill() {
     this.player.teleport(this.x, this.y);
-    this.player.teleporting(false);
+    this.player.stateMachine.transition("idle");
     this.destroy();
+  }
+
+  static shoot(args) {
+    if (args.scene.projectileGroup.children.entries.length < 1) {
+      args.scene.projectileGroup.add(new Projectile(args));
+    }
   }
 }
