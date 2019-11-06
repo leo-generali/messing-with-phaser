@@ -1,14 +1,24 @@
 import { GameObjects } from "phaser";
 import { useContext } from "preact/hooks";
 
-import Projectile from "../Projectile";
 import { setAnimations } from "./animations";
 import { Store } from "../../ui/store";
 import StateMachine from "../../lib/StateMachine";
-import { IdleState, MoveState, JumpState, AimState } from "./states";
+import {
+  IdleState,
+  MoveState,
+  JumpState,
+  AimState,
+  ShootingState
+} from "./states";
 
 const DAMAGE_INVINCIBILITY_TIME = 100;
 const JUMP_VELOCITY = -250;
+
+export const DIRECTION = {
+  LEFT: "left",
+  RIGHT: "right"
+};
 
 export default class extends GameObjects.Sprite {
   constructor({ scene, x, y }) {
@@ -16,6 +26,9 @@ export default class extends GameObjects.Sprite {
     this.scene = scene;
     this.scene.add.existing(this);
     this.scene.physics.world.enable(this);
+
+    // Set the player's current direction
+    this.direction = DIRECTION.RIGHT;
 
     // Hook into the UI
     this.dispatch = useContext(Store).dispatch;
@@ -54,7 +67,8 @@ export default class extends GameObjects.Sprite {
         idle: new IdleState(),
         move: new MoveState(),
         jump: new JumpState(),
-        aim: new AimState()
+        aim: new AimState(),
+        shoot: new ShootingState()
       },
       { sprite: this }
     );
@@ -69,16 +83,6 @@ export default class extends GameObjects.Sprite {
     // if (this.timeSinceLastHit > DAMAGE_INVINCIBILITY_TIME && this.alpha !== 1) {
     //   this.setAlpha(1);
     // }
-  }
-
-  shootProjectile() {
-    Projectile.shoot({
-      scene: this.scene,
-      x: this.x,
-      y: this.y,
-      direction: this.flipX ? "left" : "right",
-      projectileTimer: this.projectileTimer
-    });
   }
 
   enemyHit() {

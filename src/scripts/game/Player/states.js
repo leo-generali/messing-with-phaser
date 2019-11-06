@@ -1,9 +1,13 @@
 import State from "../../lib/State";
+import { DIRECTION } from "./index";
 import { IDLE_ANIM, WALKING_ANIM_SIDE, JUMP_ANIM } from "./animations";
-import Projectile from "../Projectile";
+import { calculateShootingVelocity } from "./helpers";
 
 const VELOCITY = 120;
 const JUMP_VELOCITY = -450;
+
+const SHOOT_PROJECTILE_TIMER = 20;
+const SHOOT_VELOCITY = { MIN: 120, MAX: 400 };
 
 export class IdleState extends State {
   enter({ sprite }) {
@@ -45,10 +49,12 @@ export class MoveState extends State {
 
     // Handle left and right movement
     if (left.isDown) {
+      sprite.direction = DIRECTION.LEFT;
       sprite.flipX = true;
       sprite.run(-VELOCITY);
       sprite.anims.play(WALKING_ANIM_SIDE, true);
     } else if (right.isDown) {
+      sprite.direction = DIRECTION.RIGHT;
       sprite.flipX = false;
       sprite.run(VELOCITY);
       sprite.anims.play(WALKING_ANIM_SIDE, true);
@@ -76,9 +82,11 @@ export class JumpState extends State {
     const { left, right, shift } = sprite.keys;
 
     if (left.isDown) {
+      sprite.direction = DIRECTION.LEFT;
       sprite.flipX = true;
       sprite.run(-VELOCITY);
     } else if (right.isDown) {
+      sprite.direction = DIRECTION.RIGHT;
       sprite.flipX = false;
       sprite.run(VELOCITY);
     }
@@ -116,9 +124,30 @@ export class AimState extends State {
     sprite.projectileTimer++;
 
     if (shift.isUp) {
-      sprite.shootProjectile();
+      this.stateMachine.transition("shoot");
     }
   }
 }
 
-export class ShootingState extends State {}
+export class ShootingState extends State {
+  enter({ sprite }) {
+    const shootingVelocity = calculateShootingVelocity(
+      SHOOT_VELOCITY.MIN,
+      SHOOT_VELOCITY.MAX,
+      sprite.projectileTimer,
+      SHOOT_PROJECTILE_TIMER
+    );
+
+    sprite.body.moves = true;
+    sprite.body.setVelocityY(-200);
+    sprite.body.setVelocityX(
+      sprite.direction === "left" ? -shootingVelocity : shootingVelocity
+    );
+  }
+
+  execute({ sprite }) {
+    if (sprite.isTouchingFloor()) {
+      this.stateMachine.transition("idle");
+    }
+  }
+}
