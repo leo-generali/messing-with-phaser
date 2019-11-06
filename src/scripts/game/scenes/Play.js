@@ -13,11 +13,6 @@ const SPRITE_CONFIG = {
   frameWidth: 16
 };
 
-const PLAYER_SPRITE_CONFIG = {
-  frameHeight: 32,
-  frameWidth: 32
-};
-
 export default class extends Scene {
   constructor() {
     super({ key: "play_scene" });
@@ -26,7 +21,7 @@ export default class extends Scene {
   preload() {
     // Load all of the player sprites
     Object.entries(playerSprites).forEach(([key, path]) => {
-      this.load.spritesheet(`player-anim/${key}`, path, PLAYER_SPRITE_CONFIG);
+      this.load.spritesheet(`player-anim/${key}`, path, SPRITE_CONFIG);
     });
 
     Object.entries(backgroundImages).forEach(([color, path]) => {

@@ -35,7 +35,7 @@ export default class extends GameObjects.Sprite {
 
     // Set the size of the player as the size of the character
     // Move offset to top left
-    this.body.setSize(16, 21).setOffset(8, 9);
+    this.body.setSize(16, 16).setOffset(0, 0);
 
     // Add jump mechanic variables
     // Keep track of how long player has been holding jump button (for variable jump height)

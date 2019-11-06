@@ -1,6 +1,11 @@
 import State from "../../lib/State";
 import { DIRECTION } from "./index";
-import { IDLE_ANIM, WALKING_ANIM_SIDE, JUMP_ANIM } from "./animations";
+import {
+  IDLE_ANIM,
+  WALKING_ANIM_SIDE,
+  JUMP_ANIM,
+  ROLLING_ANIM
+} from "./animations";
 import { calculateShootingVelocity } from "./helpers";
 
 const VELOCITY = 120;
@@ -131,6 +136,7 @@ export class AimState extends State {
 
 export class ShootingState extends State {
   enter({ sprite }) {
+    sprite.anims.play(ROLLING_ANIM, true);
     const shootingVelocity = calculateShootingVelocity(
       SHOOT_VELOCITY.MIN,
       SHOOT_VELOCITY.MAX,
