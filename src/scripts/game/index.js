@@ -3,13 +3,14 @@ import { h } from "preact";
 import { useEffect } from "preact/hooks";
 import { memo } from "preact/compat";
 import { Play } from "./scenes";
+import { ZOOM } from "../constants/game";
 
 const config = {
   type: Phaser.AUTO, // Which renderer to use
   width: 640, // Canvas width in pixels
   height: 320, // Canvas height in pixels
   pixelArt: true,
-  zoom: 1.75,
+  zoom: ZOOM,
   parent: "game", // ID of the DOM element to add the canvas to
   scene: [Play],
   physics: {
