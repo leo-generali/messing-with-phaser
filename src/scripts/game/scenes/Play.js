@@ -63,12 +63,14 @@ export default class extends Scene {
       obj => obj.name === "player_spawn"
     );
 
-    this.door = new Door({ scene: this, x: spawnPoint.x, y: spawnPoint.y });
-    this.player = new Player({ scene: this, x: spawnPoint.x, y: spawnPoint.y });
-
     const enemySpawns = map.objects[0].objects.filter(
       obj => obj.name === "enemy_spawn"
     );
+
+    this.enemiesOnMap = enemySpawns.length;
+
+    this.door = new Door({ scene: this, x: spawnPoint.x, y: spawnPoint.y });
+    this.player = new Player({ scene: this, x: spawnPoint.x, y: spawnPoint.y });
 
     enemySpawns.forEach(spawn => {
       const enemy = new Enemy({ scene: this, x: spawn.x, y: spawn.y });
@@ -80,14 +82,15 @@ export default class extends Scene {
     this.cameras.main.setBackgroundColor("#3f3851");
   }
 
-  update(time, delta) {
+  update() {
     if (this.isPlayerDead) return;
 
     this.enemyGroup.children.entries.forEach(sprite => {
-      sprite.update(time, delta);
+      sprite.update();
     });
 
     this.player.update();
+    this.door.update();
   }
 
   setPlayerDead() {

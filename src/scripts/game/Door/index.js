@@ -1,5 +1,10 @@
 import { GameObjects } from "phaser";
 
+import { setAnimations } from "./animations";
+
+import StateMachine from "../../lib/StateMachine";
+import { StartState, OpenState } from "./states";
+
 export default class extends GameObjects.Sprite {
   constructor({ scene, x, y }) {
     super(scene, x, y);
@@ -9,20 +14,21 @@ export default class extends GameObjects.Sprite {
 
     this.body.setSize(46, 56).setOffset(0, 0);
 
-    this.scene.anims.create({
-      key: "door-anim/opening",
-      frames: scene.anims.generateFrameNames("door-sprite/all", {
-        frames: [2, 1, 0]
-      }),
-      frameRate: 9,
-      repeat: -1
-    });
+    setAnimations(this.scene);
 
     this.scene.physics.add.collider(this, this.scene.backgroundLayer);
-    this.anims.play("door-anim/opening", true);
+
+    this.stateMachine = new StateMachine(
+      "start",
+      {
+        start: new StartState(),
+        open: new OpenState()
+      },
+      { sprite: this, scene: this.scene }
+    );
   }
 
   update() {
-    console.log("asdasd");
+    this.stateMachine.step();
   }
 }
