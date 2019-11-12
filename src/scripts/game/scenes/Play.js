@@ -2,10 +2,10 @@ import { Scene, Physics } from "phaser";
 import Player from "../Player";
 import Enemy from "../Enemy";
 import playerSprites from "../../../assets/img/player";
-import backgroundImages from "../../../assets/img/bg";
+import tileset from "../../../assets/img/tileset";
 
 import sprites from "../../../assets/sprites.png";
-import tileset from "../../../assets/img/tileset.png";
+// import tileset from "../../../assets/img/tileset.png";
 import tilemap from "../../../assets/tilemaps/level_one.json";
 
 const SPRITE_CONFIG = {
@@ -27,12 +27,12 @@ export default class extends Scene {
       });
     });
 
-    Object.entries(backgroundImages).forEach(([color, path]) => {
-      this.load.image(`bg-image/${color}`, path);
+    Object.entries(tileset).forEach(([key, path]) => {
+      this.load.image(`tiles/${key}`, path);
     });
 
     this.load.spritesheet("characters", sprites, SPRITE_CONFIG);
-    this.load.image("tiles", tileset);
+    // this.load.image("tiles", tileset);
     this.load.tilemapTiledJSON("map", tilemap);
   }
 
@@ -40,33 +40,48 @@ export default class extends Scene {
     this.isPlayerDead = false;
 
     const map = this.make.tilemap({ key: "map" });
-    const tileset = map.addTilesetImage("tileset", "tiles");
+    const terrainTileset = map.addTilesetImage("terrain", "tiles/terrain");
+    const decorationTileset = map.addTilesetImage(
+      "decoration",
+      "tiles/decoration"
+    );
 
-    this.backgroundLayer = map.createStaticLayer("Background", tileset, 0, 0);
-    this.foregroundLayer = map.createStaticLayer("Foreground", tileset, 0, 0);
-    this.foregroundLayer.setCollisionByExclusion([-1]);
+    this.backgroundLayer = map.createStaticLayer("foreground", terrainTileset);
+    this.foregroundLayer = map.createStaticLayer("background", terrainTileset);
+    this.decorationLayer = map.createStaticLayer(
+      "decoration",
+      decorationTileset
+    );
 
-    this.player = new Player({ scene: this, x: 200, y: 200 });
-    this.enemy = new Enemy({ scene: this, x: 275, y: 200 });
+    this.backgroundLayer.setCollisionByExclusion([-1]);
 
     this.enemyGroup = this.add.group();
-    this.projectileGroup = this.add.group();
-    this.enemyGroup.add(this.enemy);
 
-    this.physics.add.collider(this.player, this.foregroundLayer);
-    this.physics.add.collider(this.enemy, this.foregroundLayer);
+    const spawnPoint = map.findObject(
+      "objects",
+      obj => obj.name === "player_spawn"
+    );
 
-    this.cameras.main.setBackgroundColor("#211f30");
+    this.player = new Player({ scene: this, x: spawnPoint.x, y: spawnPoint.y });
+
+    const enemySpawns = map.objects[0].objects.filter(
+      obj => obj.name === "enemy_spawn"
+    );
+
+    enemySpawns.forEach(spawn => {
+      const enemy = new Enemy({ scene: this, x: spawn.x, y: spawn.y });
+      this.enemyGroup.add(enemy);
+      this.physics.add.collider(enemy, this.backgroundLayer);
+    });
+
+    this.physics.add.collider(this.player, this.backgroundLayer);
+    this.cameras.main.setBackgroundColor("#3f3851");
   }
 
   update(time, delta) {
     if (this.isPlayerDead) return;
 
     this.enemyGroup.children.entries.forEach(sprite => {
-      sprite.update(time, delta);
-    });
-
-    this.projectileGroup.children.entries.forEach(sprite => {
       sprite.update(time, delta);
     });
 

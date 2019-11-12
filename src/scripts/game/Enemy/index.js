@@ -2,9 +2,9 @@ import { GameObjects } from "phaser";
 import { setAnimations } from "./animations";
 
 export default class extends GameObjects.Sprite {
-  constructor(config) {
-    super(config.scene, config.x, config.x);
-    this.scene = config.scene;
+  constructor({ scene, x, y }) {
+    super(scene, x, y);
+    this.scene = scene;
     this.scene.add.existing(this);
     this.scene.physics.world.enable(this);
 
@@ -22,7 +22,6 @@ export default class extends GameObjects.Sprite {
     });
 
     this.anims.play("enemy-anim/idle", true);
-
     this.player = this.scene.player;
   }
 

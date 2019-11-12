@@ -9,7 +9,7 @@ const config = {
   width: 640, // Canvas width in pixels
   height: 320, // Canvas height in pixels
   pixelArt: true,
-  zoom: 2,
+  zoom: 1.75,
   parent: "game", // ID of the DOM element to add the canvas to
   scene: [Play],
   physics: {
