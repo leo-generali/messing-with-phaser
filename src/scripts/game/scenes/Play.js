@@ -1,15 +1,13 @@
 import { Scene, Physics } from "phaser";
 import Player from "../Player";
 import Enemy from "../Enemy";
+import Door from "../Door";
 
 import playerSprites from "../../../assets/img/player";
 import tileset from "../../../assets/img/tileset";
-import tilemap from "../../../assets/tilemaps/level_one.json";
+import doorSprites from "../../../assets/img/door.png";
 
-const SPRITE_CONFIG = {
-  frameHeight: 16,
-  frameWidth: 16
-};
+import tilemap from "../../../assets/tilemaps/level_one.json";
 
 export default class extends Scene {
   constructor() {
@@ -28,6 +26,11 @@ export default class extends Scene {
     // Load the different tilesets
     Object.entries(tileset).forEach(([key, path]) => {
       this.load.image(`tiles/${key}`, path);
+    });
+
+    this.load.spritesheet("door-sprite/all", doorSprites, {
+      frameHeight: 56,
+      frameWidth: 46
     });
 
     // Load the map
@@ -60,6 +63,7 @@ export default class extends Scene {
       obj => obj.name === "player_spawn"
     );
 
+    this.door = new Door({ scene: this, x: spawnPoint.x, y: spawnPoint.y });
     this.player = new Player({ scene: this, x: spawnPoint.x, y: spawnPoint.y });
 
     const enemySpawns = map.objects[0].objects.filter(
