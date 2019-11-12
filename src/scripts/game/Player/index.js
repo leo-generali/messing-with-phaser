@@ -4,16 +4,11 @@ import { useContext } from "preact/hooks";
 import { setAnimations } from "./animations";
 import { Store } from "../../ui/store";
 import StateMachine from "../../lib/StateMachine";
-import {
-  IdleState,
-  MoveState,
-  JumpState,
-  AimState,
-  ShootingState
-} from "./states";
+import { IdleState, MoveState, JumpState, StaggerState } from "./states";
 
 const DAMAGE_INVINCIBILITY_TIME = 100;
 const JUMP_VELOCITY = -250;
+const ENEMY_JUMP_VELOCITY = JUMP_VELOCITY * 1.6;
 
 export const DIRECTION = {
   LEFT: "left",
@@ -26,6 +21,7 @@ export default class extends GameObjects.Sprite {
     this.scene = scene;
     this.scene.add.existing(this);
     this.scene.physics.world.enable(this);
+    this.flipX = true;
 
     // Set the player's current direction
     this.direction = DIRECTION.RIGHT;
@@ -35,14 +31,7 @@ export default class extends GameObjects.Sprite {
 
     // Set the size of the player as the size of the character
     // Move offset to top left
-    this.body.setSize(17, 16).setOffset(11, 11);
-
-    // Add jump mechanic variables
-    // Keep track of how long player has been holding jump button (for variable jump height)
-    this.jumpTimer = 0;
-
-    // Variables related to teleportation mechanic
-    this.projectileTimer = 0;
+    this.body.setSize(17, 16).setOffset(5, 11);
 
     // Set all the animations for Mario
     setAnimations(this.scene);
@@ -66,9 +55,8 @@ export default class extends GameObjects.Sprite {
       {
         idle: new IdleState(),
         move: new MoveState(),
-        jump: new JumpState()
-        // aim: new AimState(),
-        // shoot: new ShootingState()
+        jump: new JumpState(),
+        stagger: new StaggerState()
       },
       { sprite: this }
     );
@@ -87,21 +75,22 @@ export default class extends GameObjects.Sprite {
 
   enemyHit() {
     if (this.keys.up.isDown) {
-      this.jump(-220);
+      this.jump(ENEMY_JUMP_VELOCITY * 1.2);
     } else {
-      this.jump(JUMP_VELOCITY);
+      this.jump(ENEMY_JUMP_VELOCITY);
     }
   }
 
   // Take one point of damage away if no damage is added
   takeDamage(damage = 1) {
-    if (this.timeSinceLastHit > DAMAGE_INVINCIBILITY_TIME) {
-      this.setAlpha(0.5);
-      this.lives = this.lives - damage;
-      this.scene.cameras.main.shake();
-      this.timeSinceLastHit = 0;
-      this.dispatch({ type: "UPDATE_LIVES", payload: this.lives });
-    }
+    this.stateMachine.transition("stagger");
+    // if (this.timeSinceLastHit > DAMAGE_INVINCIBILITY_TIME) {
+    //   this.setAlpha(0.5);
+    //   this.lives = this.lives - damage;
+    //   this.scene.cameras.main.shake();
+    //   this.timeSinceLastHit = 0;
+    //   this.dispatch({ type: "UPDATE_LIVES", payload: this.lives });
+    // }
   }
 
   teleport(x, y) {
@@ -119,5 +108,11 @@ export default class extends GameObjects.Sprite {
 
   isTouchingFloor() {
     return this.body.blocked.down;
+  }
+
+  knockBack() {
+    const xVelocity = this.direction === DIRECTION.LEFT ? 150 : -150;
+    this.body.setVelocityY(-200);
+    this.body.setVelocityX(xVelocity);
   }
 }

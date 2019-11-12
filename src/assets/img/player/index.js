@@ -1,6 +1,6 @@
-import fall from "./fall.png";
-import roll from "./roll.png";
-import jump from "./jump.png";
+import idle from "./idle.png";
 import run from "./run.png";
+import jump from "./jump.png";
+import stagger from "./stagger.png";
 
-export default { fall, roll, jump, run };
+export default { idle, run, jump, stagger };

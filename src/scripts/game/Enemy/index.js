@@ -1,4 +1,5 @@
 import { GameObjects } from "phaser";
+import { setAnimations } from "./animations";
 
 export default class extends GameObjects.Sprite {
   constructor(config) {
@@ -33,7 +34,6 @@ export default class extends GameObjects.Sprite {
 
   _checkIfVerticalHit() {
     if (this.player.body.velocity.y > 0) {
-      // Bounce the player back up
       this.player.enemyHit();
       // Kill this enemy
       this._kill();

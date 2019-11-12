@@ -1,7 +1,7 @@
 import { Scene, Physics } from "phaser";
 import Player from "../Player";
 import Enemy from "../Enemy";
-import playerSprites from "../../../assets/img/pig";
+import playerSprites from "../../../assets/img/player";
 import backgroundImages from "../../../assets/img/bg";
 
 import sprites from "../../../assets/sprites.png";
@@ -47,7 +47,7 @@ export default class extends Scene {
     this.foregroundLayer.setCollisionByExclusion([-1]);
 
     this.player = new Player({ scene: this, x: 200, y: 200 });
-    this.enemy = new Enemy({ scene: this, x: 250, y: 200 });
+    this.enemy = new Enemy({ scene: this, x: 275, y: 200 });
 
     this.enemyGroup = this.add.group();
     this.projectileGroup = this.add.group();
