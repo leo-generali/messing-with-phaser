@@ -86,7 +86,7 @@ export class JumpState extends State {
     }
 
     if (sprite.isTouchingFloor()) {
-      this.stateMachine.transition("idle");
+      this.stateMachine.transition("previous");
       return;
     }
   }
@@ -100,7 +100,7 @@ export class StaggerState extends State {
 
   execute({ sprite }) {
     if (sprite.isTouchingFloor()) {
-      this.stateMachine.transition("idle");
+      this.stateMachine.transition("previous");
       return;
     }
   }

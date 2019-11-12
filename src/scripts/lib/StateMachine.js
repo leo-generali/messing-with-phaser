@@ -4,6 +4,7 @@ export default class StateMachine {
     this.possibleStates = possibleStates;
     this.stateArgs = stateArgs;
     this.state = null;
+    this.stateStack = [];
 
     // Give each state access to this state machine
     for (const state of Object.values(this.possibleStates)) {
@@ -17,6 +18,7 @@ export default class StateMachine {
     // execute on subsequent updates
     if (this.state === null) {
       this.state = this.initialState;
+      this.stateStack = [...this.stateStack, this.initialState];
       this.possibleStates[this.state].enter(this.stateArgs);
     }
 
@@ -24,7 +26,25 @@ export default class StateMachine {
   }
 
   transition(newState, enterArgs = {}) {
-    this.state = newState;
+    // Run the exit function of the state
+    this.possibleStates[this.state].exit();
+
+    // Return to the last state in pushdown automata
+    if (newState === "previous") {
+      this.stateStack.pop();
+    }
+
+    // In these actions, add to the stateStack
+    if (["stagger", "jump"].includes(newState)) {
+      this.stateStack.push(newState);
+    }
+
+    // For these actions, rewrtite the statStack
+    if (["move", "idle"].includes(newState)) {
+      this.stateStack = [newState];
+    }
+
+    this.state = this.stateStack[this.stateStack.length - 1];
 
     // Call state entering function
     this.possibleStates[this.state].enter({ ...this.stateArgs, ...enterArgs });
