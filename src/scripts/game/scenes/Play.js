@@ -1,7 +1,7 @@
 import { Scene, Physics } from "phaser";
 import Player from "../Player";
 import Enemy from "../Enemy";
-import playerSprites from "../../../assets/img/player";
+import playerSprites from "../../../assets/img/pig";
 import backgroundImages from "../../../assets/img/bg";
 
 import sprites from "../../../assets/sprites.png";
@@ -21,7 +21,10 @@ export default class extends Scene {
   preload() {
     // Load all of the player sprites
     Object.entries(playerSprites).forEach(([key, path]) => {
-      this.load.spritesheet(`player-anim/${key}`, path, SPRITE_CONFIG);
+      this.load.spritesheet(`player-sprite/${key}`, path, {
+        frameHeight: 28,
+        frameWidth: 34
+      });
     });
 
     Object.entries(backgroundImages).forEach(([color, path]) => {

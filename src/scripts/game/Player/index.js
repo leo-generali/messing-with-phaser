@@ -35,7 +35,7 @@ export default class extends GameObjects.Sprite {
 
     // Set the size of the player as the size of the character
     // Move offset to top left
-    this.body.setSize(16, 16).setOffset(0, 0);
+    this.body.setSize(17, 16).setOffset(11, 11);
 
     // Add jump mechanic variables
     // Keep track of how long player has been holding jump button (for variable jump height)
@@ -66,9 +66,9 @@ export default class extends GameObjects.Sprite {
       {
         idle: new IdleState(),
         move: new MoveState(),
-        jump: new JumpState(),
-        aim: new AimState(),
-        shoot: new ShootingState()
+        jump: new JumpState()
+        // aim: new AimState(),
+        // shoot: new ShootingState()
       },
       { sprite: this }
     );

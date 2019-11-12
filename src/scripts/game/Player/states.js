@@ -1,11 +1,6 @@
 import State from "../../lib/State";
 import { DIRECTION } from "./index";
-import {
-  IDLE_ANIM,
-  WALKING_ANIM_SIDE,
-  JUMP_ANIM,
-  ROLLING_ANIM
-} from "./animations";
+import { IDLE_ANIM, WALKING_ANIM, JUMP_ANIM, ROLLING_ANIM } from "./animations";
 import { calculateShootingVelocity } from "./helpers";
 
 const VELOCITY = 120;
@@ -55,14 +50,16 @@ export class MoveState extends State {
     // Handle left and right movement
     if (left.isDown) {
       sprite.direction = DIRECTION.LEFT;
-      sprite.flipX = true;
-      sprite.run(-VELOCITY);
-      sprite.anims.play(WALKING_ANIM_SIDE, true);
-    } else if (right.isDown) {
-      sprite.direction = DIRECTION.RIGHT;
+      sprite.body.setOffset(11, 11);
       sprite.flipX = false;
+      sprite.run(-VELOCITY);
+      sprite.anims.play(WALKING_ANIM, true);
+    } else if (right.isDown) {
+      sprite.body.setOffset(5, 11);
+      sprite.direction = DIRECTION.RIGHT;
+      sprite.flipX = true;
       sprite.run(VELOCITY);
-      sprite.anims.play(WALKING_ANIM_SIDE, true);
+      sprite.anims.play(WALKING_ANIM, true);
     }
 
     if (shift.isDown) {
@@ -88,11 +85,13 @@ export class JumpState extends State {
 
     if (left.isDown) {
       sprite.direction = DIRECTION.LEFT;
-      sprite.flipX = true;
+      sprite.body.setOffset(11, 11);
+      sprite.flipX = false;
       sprite.run(-VELOCITY);
     } else if (right.isDown) {
       sprite.direction = DIRECTION.RIGHT;
-      sprite.flipX = false;
+      sprite.body.setOffset(5, 11);
+      sprite.flipX = true;
       sprite.run(VELOCITY);
     }
 
