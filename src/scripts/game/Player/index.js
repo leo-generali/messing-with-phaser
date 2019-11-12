@@ -33,7 +33,7 @@ export default class extends GameObjects.Sprite {
     // Move offset to top left
     this.body.setSize(17, 16).setOffset(5, 11);
 
-    // Set all the animations for Mario
+    // Set all the animations for the player
     setAnimations(this.scene);
 
     // Variables related to player health

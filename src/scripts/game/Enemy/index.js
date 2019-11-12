@@ -1,5 +1,5 @@
 import { GameObjects } from "phaser";
-import { setAnimations } from "./animations";
+import { setAnimations, IDLE_ANIM } from "./animations";
 
 export default class extends GameObjects.Sprite {
   constructor({ scene, x, y }) {
@@ -10,18 +10,14 @@ export default class extends GameObjects.Sprite {
 
     this.body.setCollideWorldBounds(true);
 
-    this.body.setSize(12, 10);
-    this.body.offset.set(2, 6);
+    this.body.setSize(17, 16).setOffset(11, 11);
 
-    this.scene.anims.create({
-      key: "enemy-anim/idle",
-      frames: this.scene.anims.generateFrameNames("characters", {
-        frames: [33]
-      }),
-      repeat: 1
-    });
+    this.setTint(0xff1c00);
 
-    this.anims.play("enemy-anim/idle", true);
+    // Set all the animations for enemy
+    setAnimations(this.scene);
+
+    this.anims.play(IDLE_ANIM, true);
     this.player = this.scene.player;
   }
 

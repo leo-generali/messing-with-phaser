@@ -1,11 +1,9 @@
 import { Scene, Physics } from "phaser";
 import Player from "../Player";
 import Enemy from "../Enemy";
+
 import playerSprites from "../../../assets/img/player";
 import tileset from "../../../assets/img/tileset";
-
-import sprites from "../../../assets/sprites.png";
-// import tileset from "../../../assets/img/tileset.png";
 import tilemap from "../../../assets/tilemaps/level_one.json";
 
 const SPRITE_CONFIG = {
@@ -27,12 +25,12 @@ export default class extends Scene {
       });
     });
 
+    // Load the different tilesets
     Object.entries(tileset).forEach(([key, path]) => {
       this.load.image(`tiles/${key}`, path);
     });
 
-    this.load.spritesheet("characters", sprites, SPRITE_CONFIG);
-    // this.load.image("tiles", tileset);
+    // Load the map
     this.load.tilemapTiledJSON("map", tilemap);
   }
 
