@@ -66,11 +66,12 @@ export default class extends GameObjects.Sprite {
 
   update() {
     this.stateMachine.step();
+    this.timeSinceLastHit++;
+
+    if (this.timeSinceLastHit > DAMAGE_INVINCIBILITY_TIME && this.alpha !== 1) {
+      this.setAlpha(1);
+    }
     // this._checkLives();
-    // this.timeSinceLastHit++;
-    // if (this.timeSinceLastHit > DAMAGE_INVINCIBILITY_TIME && this.alpha !== 1) {
-    //   this.setAlpha(1);
-    // }
   }
 
   enemyHit() {
@@ -84,13 +85,13 @@ export default class extends GameObjects.Sprite {
   // Take one point of damage away if no damage is added
   takeDamage(damage = 1) {
     this.stateMachine.transition("stagger");
-    // if (this.timeSinceLastHit > DAMAGE_INVINCIBILITY_TIME) {
-    //   this.setAlpha(0.5);
-    //   this.lives = this.lives - damage;
-    //   this.scene.cameras.main.shake();
-    //   this.timeSinceLastHit = 0;
-    //   this.dispatch({ type: "UPDATE_LIVES", payload: this.lives });
-    // }
+    if (this.timeSinceLastHit > DAMAGE_INVINCIBILITY_TIME) {
+      this.lives = this.lives - damage;
+      this.scene.cameras.main.shake();
+      this.timeSinceLastHit = 0;
+      this.setAlpha(0.5);
+      this.dispatch({ type: "UPDATE_LIVES", payload: this.lives });
+    }
   }
 
   teleport(x, y) {
