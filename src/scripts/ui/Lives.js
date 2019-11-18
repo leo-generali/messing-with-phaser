@@ -1,16 +1,14 @@
 import { h } from "preact";
+import Spritesheet from "react-responsive-spritesheet";
 import livesImg from "../../assets/img/life_bar.png";
 import heartImg from "../../assets/img/heart.png";
 
 const Lives = ({ lives }) => {
   return (
-    <div style={{ position: "relative" }}>
-      <img
-        style={{ width: "250%", imageRendering: "pixelated" }}
-        src={livesImg}
-      />
+    <div className="ui-heart-container">
+      <img src={livesImg} />
       {[...Array(lives).keys()].map((_, index) => (
-        <Heart left={46 + index * 27} />
+        <Heart left={42 + index * 27} />
       ))}
     </div>
   );
@@ -18,9 +16,23 @@ const Lives = ({ lives }) => {
 
 const Heart = ({ left }) => {
   return (
-    <div style={{ color: "red", position: "absolute", top: 28, left: left }}>
-      ♥
-    </div>
+    <Spritesheet
+      style={{ left: left }}
+      className="ui-heart"
+      image={heartImg}
+      widthFrame={18}
+      heightFrame={14}
+      steps={8}
+      fps={10}
+      autoplay={true}
+      loop={true}
+      onLoopComplete={spritesheet => {
+        spritesheet.goToAndPause(1);
+        setTimeout(() => {
+          spritesheet.play();
+        }, 3000);
+      }}
+    />
   );
 };
 

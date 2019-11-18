@@ -1,0 +1,22 @@
+.ui {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+.ui-heart-container {
+  position: relative;
+
+  img {
+    width: 250%;
+  }
+}
+
+.ui-heart {
+  transform: scale(1.8);
+  position: absolute;
+  top: 40px;
+}
